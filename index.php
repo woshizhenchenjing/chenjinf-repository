@@ -1,7 +1,5 @@
 <?php
 
-for($i=0;$i<9;$i++){
-echo $i;
-}
+ echo '测试git钩子是否成功';exit;
 
 ?>
