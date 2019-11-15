@@ -1,5 +1,5 @@
 <?php
 
- echo 'test:git post-receive 6';exit;
+ echo 'test:git post-receive 7';exit;
 
 ?>
