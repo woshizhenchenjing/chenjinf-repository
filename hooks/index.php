@@ -1,26 +1,18 @@
 <?php
-error_reporting(1);
-// 生产环境web目录
-$web_path = '/usr/share/nginx/html/chenjing';
 
-$client_ip = $_SERVER['REMOTE_ADDR'];
-$fs = fopen('./auto_hook.log', 'a');
-fwrite($fs, 'Request on ['.date("Y-m-d H:i:s").'] from ['.$client_ip.']'.PHP_EOL);
-
-// 头部信息
-$data_headers = getallheaders();
-// Payload的数据信息
-$json_content = file_get_contents('php://input');
-// secret
-$secret_code = '!@#Cj121256';
-
-$signature = "sha1=".hash_hmac( 'sha1', $json_content,$secret_code);
-if(strcmp($signature, $data_headers['X-Hub-Signature']) == 0){
-    fwrite($fs, 'X-Hub-Signature:OK '.PHP_EOL);
-    $cmd = "cd $web_path && git pull";
-    shell_exec($cmd);
-}else{
-    fwrite($fs, 'X-Hub-Signature:NO '.PHP_EOL);
+$path = '/usr/share/nginx/html/chenjing';
+$requestBody = file_get_contents("php://input");
+if (empty($requestBody)) {
+    die('send fail');
+}
+$content = json_decode($requestBody, true);
+//若是主分支且提交数大于0
+if ($content['ref']=='refs/heads/master') {
+    $res = shell_exec("cd {$path}  && git reset --hard origin/master && git fetch --all && sudo git pull");
+    $res_log = '-------------------------'.PHP_EOL;
+    $res_log .= $content['user_name'] . ' 在' . date('Y-m-d H:i:s') . '向' . $content['repository']['name'] . '项目的' . $content['ref'] . '分支push了' . $content['total_commits_count'] . '个commit：' . PHP_EOL;
+    $res_log .= $res.PHP_EOL;
+    file_put_contents("git-webhook.log", $res_log, FILE_APPEND);//追加写入
 }
 
 
