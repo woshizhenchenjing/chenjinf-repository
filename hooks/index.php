@@ -16,8 +16,11 @@ $secret_code = '!@#Cj121256';
 
 $signature = "sha1=".hash_hmac( 'sha1', $json_content,$secret_code);
 if(strcmp($signature, $data_headers['X-Hub-Signature']) == 0){
+    fwrite($fs, 'X-Hub-Signature:OK '.PHP_EOL);
     $cmd = "cd $web_path && git pull";
     shell_exec($cmd);
+}else{
+    fwrite($fs, 'X-Hub-Signature:NO '.PHP_EOL);
 }
 
 
