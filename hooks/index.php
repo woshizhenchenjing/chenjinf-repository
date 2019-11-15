@@ -1,5 +1,4 @@
 <?php
-date_default_timezone_set('PRC');
 error_reporting(1);
 // 生产环境web目录
 $web_path = '/usr/share/nginx/html/chenjing';
@@ -14,8 +13,8 @@ fwrite($fs, 'Request on ['.date("Y-m-d H:i:s").'] from ['.$client_ip.']'.PHP_EOL
 $json_content = file_get_contents('php://input');
 $data = json_decode($json_content, true);
 
-fwrite($fs, 'Data: '.json_encode($data).PHP_EOL);
-fwrite($fs, '======================================================================='.PHP_EOL);
+fwrite($fs, '[ token='.$data['token'].';'.($data['token'] !== $valid_token).']'.PHP_EOL);
+
 $fs and fclose($fs);
 
 if (empty($data['token']) || $data['token'] !== $valid_token) {
