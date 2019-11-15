@@ -12,8 +12,6 @@ $fs = fopen('./auto_hook.log', 'a');
 fwrite($fs, 'Request on ['.date("Y-m-d H:i:s").'] from ['.$client_ip.']'.PHP_EOL);
 
 $json_content = file_get_contents('php://input');
-fwrite($fs, 'Data: '.json_encode($json_content).PHP_EOL);
-
 $data = json_decode($json_content, true);
 
 fwrite($fs, 'Data: '.json_encode($data).PHP_EOL);
